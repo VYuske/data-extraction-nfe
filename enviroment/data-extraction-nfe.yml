@@ -4,6 +4,7 @@
 name: data-extraction-nfe
 channels:
     - defaults
+    - anaconda
     - conda-forge
 dependencies:
     - python=3.10
@@ -14,6 +15,8 @@ dependencies:
     - defaults::libprotobuf
     - defaults::protobuf
     - beautifulsoup4
+    - anaconda::lxml
+    - selenium
     - streamlit
     - matplotlib
     - git
