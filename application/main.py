@@ -12,7 +12,8 @@ def main():
 
     pages = [
         st.Page(default_page, title="Home"),
-        st.Page("qrcode_extraction.py", title="QR Code Extraction")
+        st.Page("extract_url_from_qrcode.py", title="Extract URL from QR Code"),
+        st.Page("extract_dataframe.py", title="Extract DataFrame"),
     ]
 
     pg = st.navigation(pages)
