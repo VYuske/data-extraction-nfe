@@ -1,0 +1,12 @@
+# Core Python packages
+pandas
+numpy
+opencv-python
+pyzbar
+pyzbar[scripts]
+beautifulsoup4
+lxml
+selenium
+streamlit
+matplotlib
+protobuf

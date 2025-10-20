@@ -1,0 +1,14 @@
+# conda env create -f conda-enviroment.yml
+# conda env update --file conda-enviroment.yml --prune
+
+name: data-extraction-nfe
+channels:
+    - defaults
+    - anaconda
+    - conda-forge
+dependencies:
+    - python=3.10
+    - git
+    - pip
+    - pip:
+        - -r requirements.txt
