@@ -5,6 +5,7 @@ __all__ = ["qrcode_reader", "test", "PACKAGE_VERSION"]
 
 # Import submodules into the package's namespace
 from .qrcode_reader import QRcodeReader
+from .text_parser import TextParser
 from .utils import utils
 
 # You can also define package-level variables or functions here
