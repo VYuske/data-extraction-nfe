@@ -78,5 +78,5 @@ class QRcodeReader():
 
         return frame
 
-    def __del__(self):
-        cv2.destroyAllWindows()
+    def release(self):
+        self.capture.release()
