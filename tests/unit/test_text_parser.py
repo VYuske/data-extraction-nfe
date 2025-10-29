@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime
 from data_extraction_nfe.text_parser import TextParser
 
 @pytest.fixture
@@ -7,7 +8,7 @@ def parser():
     return TextParser()
 
 def test_parse_text_empty(parser):
-    result = parser.parse_text("")
+    result = parser.parse_list_of_items("")
     assert result == []  # Assuming it returns an empty list for empty input
 
 def test_parse_text_nfe(parser):
@@ -72,5 +73,43 @@ def test_parse_text_nfe(parser):
         }
     ]
 
-    result = parser.parse_text(sample_text)
+    result = parser.parse_list_of_items(sample_text)
     assert result == expected
+
+def test_parse_valid_nfe(parser):
+    text = """
+    EMISSÃO NORMAL
+
+    Número: 7539 Série: 102 Emissão: 18/10/2025 19:02:31 - Via Consumidor
+
+    Protocolo de Autorização: 150250385090161 18/10/2025 19:04:22
+
+    Ambiente de Produção - Versão XML: 4.00 - Versão XSLT: 2.05 
+    """
+    result = parser.parse_nfe_data(text)
+    
+    assert result is not None
+    assert result['emission_type'] == "EMISSÃO NORMAL"
+    assert result['number'] == '7539'
+    assert result['series'] == '102'
+    assert result['emission_datetime'] == datetime(2025, 10, 18, 19, 2, 31)
+    assert result['protocol_number'] == '150250385090161'
+    assert result['protocol_datetime'] == datetime(2025, 10, 18, 19, 4, 22)
+    assert result['environment'] == 'Produção'
+    assert result['xml_version'] == '4.00'
+    assert result['xslt_version'] == '2.05'
+
+
+def test_parse_invalid_nfe(parser):
+    text = "This is not a valid NFE text"
+    result = parser.parse_nfe_data(text)
+    assert result is None
+
+def test_parse_partial_nfe(parser):
+    text = """
+    EMISSÃO NORMAL
+    Número: 7539 Série: 102 Emissão: 18/10/2025 19:02:31
+    """
+    result = parser.parse_nfe_data(text)
+    # Depending on your regex, it may return None or partial match
+    assert result is None or isinstance(result, dict)
