@@ -1,0 +1,1 @@
+from app.data_extraction_nfe.qrcode_reader import QRcodeReader

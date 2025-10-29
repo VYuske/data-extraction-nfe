@@ -23,4 +23,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8501
 
 # Default command to run the app (update if needed)
-CMD ["streamlit", "run", "application/main.py"]
+CMD ["streamlit", "run", "app/main.py"]

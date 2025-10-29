@@ -1,37 +1,48 @@
 import cv2
 import time
 from pyzbar.pyzbar import decode
-from .utils.utils import polygon_to_bbox, detection_array_to_dictionary
+from .utils.qrcode_reader_utils import *
 
 class QRcodeReader():
     """
-        QRcodeReader
-        ============
+    A class for real-time QR code detection and decoding using OpenCV and Pyzbar.
 
-        This class provides a simple interface for capturing video from a webcam, detecting, and decoding QR Codes in real time using OpenCV and pyzbar.
+    This class provides an interface to access a webcam, capture frames, detect QR codes,
+    and extract their data (URL, type, and bounding box). It can be used in real-time
+    applications that need to process QR codes from a live camera feed.
 
-        Main methods:
-        -------------
-        - __init__(camera_index, delay): Initializes webcam capture at the specified index. The 'delay' parameter controls the interval between frames.
-        - run_webcan(get_detections=True): Starts the webcam capture loop, detects QR Codes, and displays the video in real time. Shows a message in the lower left corner instructing to press 'q' to exit. Returns detections if found.
-        - display_detections(detections, frame): Draws the bounding box of detected QR Codes and displays the decoded content on the video.
-        - __del__(): Releases webcam resources and closes OpenCV windows when the object is destroyed.
+    Attributes
+    ----------
+    capture : cv2.VideoCapture
+        OpenCV video capture object for the specified camera index.
+    delay : float
+        Delay (in seconds) between frame captures to control processing rate.
 
-        Usage:
-        ------
-        Create an instance of the class with the webcam index and call the run_webcan() method to start reading QR Codes.
+    Methods
+    -------
+    get_frame(get_detection=True)
+        Captures a frame from the webcam, decodes any QR codes found, and returns
+        both the frame and detection data (URL, type, bbox, detected flag).
 
-        Example:
-        --------
-        reader = QRcodeReader(camera_index=0)
-        reader.run_webcan()
+    release()
+        Releases the webcam resource and closes the camera stream.
 
-        Dependencies:
-        -------------
-        - OpenCV (cv2)
-        - pyzbar
-        - utils.utils.polygon_to_bbox
+    Example
+    -------
+    >>> reader = QRcodeReader(camera_index=0, delay=0.01)
+    >>> while True:
+    ...     data = reader.get_frame()
+    ...     if data['detected']:
+    ...         print(f"QR Code Detected: {data['url']}")
+    ...     # Press 'q' in your main loop to exit, then release:
+    >>> reader.release()
 
+    Dependencies
+    ------------
+    - OpenCV (cv2)
+    - Pyzbar
+    - NumPy
+    - utils.qrcode_reader_utils (polygon_to_bbox, extract_detection_data)
     """
 
     def __init__(self, delay=10e-3, camera_index=0):
@@ -41,6 +52,11 @@ class QRcodeReader():
         self.delay = delay
 
     def get_frame(self, get_detection=True):
+        url = ""
+        type = None
+        bbox = None
+        detected = False
+
         time.sleep(self.delay)
 
         # Read a frame from the camera
@@ -53,30 +69,17 @@ class QRcodeReader():
         # Detect and decode the QR code
         detections = decode(frame)
         
-        if len(detections) > 0 and get_detection == True:
-            return {
-                'frame': frame,
-                'detection': detection_array_to_dictionary(detections[0])
-            }
+        if len(detections) > 0 and get_detection:
+            url, type, bbox = extract_detection_data(detections[0])
+            detected = True
 
         return {
             'frame': frame,
-            'detection': None
+            'url': url,
+            'type': type,
+            'bbox': bbox,
+            'detected': detected
         }
-
-    def draw_detection(self, detection, frame):
-        bbox = detection['bbox']
-        url = detection['url']
-        bbox = bbox.astype(int).reshape((-1, 1, 2))
-
-        # Draw the bounding box using polylines
-        # Arguments: image, array of points, is_closed, color, thickness
-        cv2.polylines(frame, [bbox], True, (0, 255, 0), 2) # Green color, 2 thickness
-
-        # Optionally, display the decoded data on the image
-        cv2.putText(frame, url, (bbox[0][0][0], bbox[0][0][1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-
-        return frame
 
     def release(self):
         self.capture.release()
