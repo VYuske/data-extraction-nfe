@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-from data_extraction_nfe import TextParser
+from libs.data_extraction_nfe import TextParser
 
 # Initialize session state
 if "text_parser" not in st.session_state:

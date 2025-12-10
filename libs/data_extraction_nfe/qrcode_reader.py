@@ -1,7 +1,7 @@
 import cv2
 import time
 from pyzbar.pyzbar import decode
-from .utils.qrcode_reader_utils import *
+from .utils import extract_detection_data
 
 class QRcodeReader():
     """

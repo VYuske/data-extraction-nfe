@@ -1,6 +1,9 @@
 import numpy as np
 import cv2
 
+# utils.py
+__all__ = ["polygon_to_bbox", "extract_detection_data", "draw_detection"]
+
 def polygon_to_bbox(polygon):
     """
     Converts a polygon object into a NumPy array of (x, y) coordinates.

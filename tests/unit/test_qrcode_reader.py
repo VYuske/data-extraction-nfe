@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from unittest.mock import patch, MagicMock
-from data_extraction_nfe.qrcode_reader import QRcodeReader
+from libs.data_extraction_nfe.qrcode_reader import QRcodeReader
 
 @pytest.fixture
 def mock_frame():

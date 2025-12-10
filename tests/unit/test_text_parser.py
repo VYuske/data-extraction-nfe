@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from data_extraction_nfe.text_parser import TextParser
+from libs.data_extraction_nfe.text_parser import TextParser
 
 @pytest.fixture
 def parser():

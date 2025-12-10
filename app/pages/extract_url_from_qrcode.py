@@ -1,6 +1,6 @@
 import streamlit as st
-from data_extraction_nfe import QRcodeReader
-from data_extraction_nfe.utils.qrcode_reader_utils import draw_detection
+from libs.data_extraction_nfe import QRcodeReader
+from libs.data_extraction_nfe.utils import draw_detection
 import webbrowser
 
 st.set_page_config(page_title="QR Code Reader", layout="centered")
